@@ -1,0 +1,1 @@
+Aplicação front-end em React JS que conterá o formulário e a área de gerenciamento do projeto Claudio News, e que consumirá a Claudio-News-API 
