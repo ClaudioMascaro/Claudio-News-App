@@ -1,14 +1,9 @@
 import React from 'react'
 
-//import Input from '../../components/Input'
-//import Button from '../../components/Button'
 
 import { Form, Container, Content } from './styles'
 
-const Newsletter: React.FC = () => {
-
-
-  return (
+const Newsletter: React.FC = () => (
   <Container>
       <Content>
       <h1>Faça seu cadastro</h1>
@@ -16,11 +11,8 @@ const Newsletter: React.FC = () => {
             <input name="email" placeholder= "E-mail" />
             <button name="login" type="submit">Inscrever-se</button>
           </Form>
-
       </Content>
-
   </Container> 
-
-)}
+)
 
 export default Newsletter
