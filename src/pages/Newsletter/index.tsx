@@ -3,48 +3,50 @@ import api from '../../services/api';
 import Button from '../../components/Button'
 import { schema } from '../../config/validationSchemas'
 
-import { Form, Container, Content, Error, Success, MessageWrapper } from './styles'
+import { Form, Container, Content, MessageWrapper } from './styles'
 
 const Newsletter: React.FC = () => {
-
-  const [state, setState] = useState({ email: '',
-  inputError: '',
-  inputSuccess: ''})
+  const [email, setEmail] = useState('')
+  const [inputError, setInputError] = useState({
+  message: '',
+  status: true,
+  ref: true})
 
   async function onSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     try {
-      const email = state.email
       await schema.validate({ email }, {
         abortEarly: false,
       })
       const response = await api.post('/newsletter', {email})
       const { message } = response.data
-      setState({ email: '',
-        inputError: '',
-        inputSuccess: message})
+      setEmail(email)
+      setInputError({ message, status: false, ref: false})  
+
       } catch (err) {
-      setState({ email: '', 
-      inputError: (err.response? err.response.data : err.message), 
-      inputSuccess: ''})
-      } 
-  }
+      setEmail('')
+      setInputError({ message: err.response? err.response.data : err.message,
+        status: true, ref: false})
+      }
+}  
 
   function onInputChange (e: React.ChangeEvent<HTMLInputElement>) {
-    setState({ email: e.target.value, inputError: '', inputSuccess: ''})
+    setEmail(e.target.value)
+    setInputError({message: '',
+    status: true,
+    ref: true})
   }
 
   return (
     <Container>
         <Content>
         <h1>Faça seu cadastro</h1>
-          <Form hasError={!!state.inputError} hasSucceded={!!state.inputSuccess} onSubmit={onSubmit}>
-              <input value={state.email} onChange={onInputChange} name="email" placeholder= "E-mail" />
+          <Form hasError={!!inputError.status} errorRef={!!inputError.ref} onSubmit={onSubmit}>
+              <input value={email} onChange={onInputChange} name="email" placeholder= "E-mail" />
               <Button name="login" type="submit">Inscrever-se</Button>
             </Form>
-            <MessageWrapper>
-            { state.inputError && <Error>{state.inputError}</Error> }
-            { state.inputSuccess && <Success>{state.inputSuccess}</Success> }
+            <MessageWrapper hasError={!!inputError.status}>
+            { inputError && inputError.message }
             </MessageWrapper>
         </Content>
     </Container> 

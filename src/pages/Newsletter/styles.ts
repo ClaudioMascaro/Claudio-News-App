@@ -2,7 +2,11 @@ import styled, { css } from 'styled-components'
 
 interface FormProps {
   hasError: boolean;
-  hasSucceded: boolean;
+  errorRef: boolean;
+}
+
+interface MessageProps {
+  hasError: boolean;
 }
 
 
@@ -23,13 +27,20 @@ export const Form = styled.form<FormProps>`
       color: #3a3a3a;
       border: 1px solid #FFF;
     
-
-    ${(props) => props.hasError && css`
-      border-color: #c53030;
+      ${(props) => (props.hasError && props.errorRef) && css`
+      border-color: #FFF;
     `}
 
-    ${(props) => props.hasSucceded && css`
+    ${(props) => (!props.hasError && !props.errorRef) && css`
       border-color: #73AB84;
+    `}
+
+    ${(props) => (!props.hasError && props.errorRef) && css`
+      border-color: #FFF;
+    `}
+
+    ${(props) => (props.hasError && !props.errorRef) && css`
+      border-color: #c53030;
     `}
 
     &::placeholder{
@@ -62,28 +73,21 @@ margin-bottom: 120px;
   
 `
 
-export const MessageWrapper = styled.div`
+export const MessageWrapper = styled.div<MessageProps>`
   max-width: 700px;
   display: flex;
   width: 100%;
   place-content: start;
   align-items: start;
-`
+  margin-top: 16px;
+  font-weight: 500;
 
-export const Error = styled.span`
+  ${(props) => props.hasError && css`
+      color: #c53030;
+    `}
 
-display: flex;
-color: #C53030;
-margin-top: 16px;
-font-weight: 500;
-
-`
-
-export const Success = styled.span`
-
-display: flex;
-color: #73AB84;
-margin-top: 16px;
-font-weight: 500;
+  ${(props) => !props.hasError && css`
+      color: #73AB84;
+    `}
 
 `
