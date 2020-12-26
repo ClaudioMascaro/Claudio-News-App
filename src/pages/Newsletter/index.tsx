@@ -1,8 +1,9 @@
 import React, { useState, FormEvent } from 'react'
 import api from '../../services/api';
 import Button from '../../components/Button'
+import { schema } from '../../config/validationSchemas'
 
-import { Form, Container, Content, Error, Success } from './styles'
+import { Form, Container, Content, Error, Success, MessageWrapper } from './styles'
 
 const Newsletter: React.FC = () => {
 
@@ -12,24 +13,29 @@ const Newsletter: React.FC = () => {
 
   async function handleAddEmail(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-  
-    if (!email) {
-      setEmail('')
-      setSuccess('')
-      setError('Insira um endereço de email.')
-      return
+    try {
+      await schema.validate({email}, {
+        abortEarly: false,
+      }).then(async () => {
+        try{
+        const response = await api.post('/newsletter', {email: email})
+        const { message } = response.data
+        setEmail('')
+        setSuccess(message)
+        setError('')
+        } catch (err) {
+          setEmail('')
+          setSuccess('')
+          setError('E-mail inválido ou já cadastrado!')
+        }
+      }).catch((err) => {
+        setEmail('')
+        setSuccess('')
+        setError(err.message)
+      })
     }
-
-    try{
-     const response = await api.post('/newsletter', {email: email})
-     const { message } = response.data
-     setEmail('')
-     setSuccess(message)
-     setError('')
-    } catch (err) {
-      setEmail('')
-      setSuccess('')
-      setError('E-mail inválido ou já cadastrado!')
+      finally {
+      return
     }
   }
 
@@ -47,9 +53,10 @@ const Newsletter: React.FC = () => {
               <input value={email} onChange={handleInput} name="email" placeholder= "E-mail" />
               <Button name="login" type="submit">Inscrever-se</Button>
             </Form>
+            <MessageWrapper>
             { inputError && <Error>{inputError}</Error> }
-
-{ inputSuccess && <Success>{inputSuccess}</Success> }
+            { inputSuccess && <Success>{inputSuccess}</Success> }
+            </MessageWrapper>
         </Content>
     </Container> 
   )

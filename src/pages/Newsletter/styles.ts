@@ -29,7 +29,7 @@ export const Form = styled.form<FormProps>`
     `}
 
     ${(props) => props.hasSucceded && css`
-      border-color: #04D361;
+      border-color: #73AB84;
     `}
 
     &::placeholder{
@@ -61,22 +61,29 @@ margin-bottom: 120px;
     }
   
 `
+
+export const MessageWrapper = styled.div`
+  max-width: 700px;
+  display: flex;
+  width: 100%;
+  place-content: start;
+  align-items: start;
+`
+
 export const Error = styled.span`
-display: block;
+
+display: flex;
 color: #C53030;
-margin-top: 8px;
-align-self: start;
-padding-left: 300px;
+margin-top: 16px;
 font-weight: 500;
 
 `
 
 export const Success = styled.span`
-display: block;
-color: #04D361;
-margin-top: 8px;
-align-self: start;
-padding-left: 300px;
+
+display: flex;
+color: #73AB84;
+margin-top: 16px;
 font-weight: 500;
 
 `
