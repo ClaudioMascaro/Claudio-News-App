@@ -7,55 +7,44 @@ import { Form, Container, Content, Error, Success, MessageWrapper } from './styl
 
 const Newsletter: React.FC = () => {
 
-  const [email, setEmail] = useState('') 
-  const [inputError, setError] = useState('') 
-  const [inputSuccess, setSuccess] = useState('')
+  const [state, setState] = useState({ email: '',
+  inputError: '',
+  inputSuccess: ''})
 
-  async function handleAddEmail(event: FormEvent<HTMLFormElement>): Promise<void> {
+  async function onSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     try {
-      await schema.validate({email}, {
+      const email = state.email
+      await schema.validate({ email }, {
         abortEarly: false,
-      }).then(async () => {
-        try{
-        const response = await api.post('/newsletter', {email: email})
-        const { message } = response.data
-        setEmail('')
-        setSuccess(message)
-        setError('')
-        } catch (err) {
-          setEmail('')
-          setSuccess('')
-          setError('E-mail inválido ou já cadastrado!')
-        }
-      }).catch((err) => {
-        setEmail('')
-        setSuccess('')
-        setError(err.message)
       })
-    }
-      finally {
-      return
-    }
+      const response = await api.post('/newsletter', {email})
+      const { message } = response.data
+      setState({ email: '',
+        inputError: '',
+        inputSuccess: message})
+      } catch (err) {
+      setState({ email: '', 
+      inputError: (err.response? err.response.data : err.message), 
+      inputSuccess: ''})
+      } 
   }
 
-  function handleInput (e: React.ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value)
-    setError('')
-    setSuccess('')
+  function onInputChange (e: React.ChangeEvent<HTMLInputElement>) {
+    setState({ email: e.target.value, inputError: '', inputSuccess: ''})
   }
 
   return (
     <Container>
         <Content>
         <h1>Faça seu cadastro</h1>
-          <Form hasError={!!inputError} hasSucceded={!!inputSuccess} onSubmit={handleAddEmail}>
-              <input value={email} onChange={handleInput} name="email" placeholder= "E-mail" />
+          <Form hasError={!!state.inputError} hasSucceded={!!state.inputSuccess} onSubmit={onSubmit}>
+              <input value={state.email} onChange={onInputChange} name="email" placeholder= "E-mail" />
               <Button name="login" type="submit">Inscrever-se</Button>
             </Form>
             <MessageWrapper>
-            { inputError && <Error>{inputError}</Error> }
-            { inputSuccess && <Success>{inputSuccess}</Success> }
+            { state.inputError && <Error>{state.inputError}</Error> }
+            { state.inputSuccess && <Success>{state.inputSuccess}</Success> }
             </MessageWrapper>
         </Content>
     </Container> 
