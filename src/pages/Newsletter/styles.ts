@@ -1,14 +1,23 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+
+interface FormProps {
+  hasError: boolean;
+  errorRef: boolean;
+}
+
+interface MessageProps {
+  hasError: boolean;
+}
 
 
-export const Form = styled.form`
+export const Form = styled.form<FormProps>`
   height: 56px;
-  margin-top: 40px;
-  max-width: 600px;
+  max-width: 700px;
   display: flex;
   width: 100%;
   place-content: center;
   align-items: center;
+  margin-top: 20px;
 
     input {
       padding: 16px;
@@ -16,18 +25,40 @@ export const Form = styled.form`
       border: 0;
       border-radius: 10px 0 0 10px;
       color: #3a3a3a;
-      border: 0 solid #FFF;
+      border: 1px solid #FFF;
+    
+      ${(props) => (props.hasError && props.errorRef) && css`
+      border-color: #FFF;
+    `}
+
+    ${(props) => (!props.hasError && !props.errorRef) && css`
+      border-color: #73AB84;
+    `}
+
+    ${(props) => (!props.hasError && props.errorRef) && css`
+      border-color: #FFF;
+    `}
+
+    ${(props) => (props.hasError && !props.errorRef) && css`
+      border-color: #c53030;
+    `}
+
+    &::placeholder{
+      color: #a8a8b3;
     }
 
+  }
 `
 
 export const Container = styled.div`
   height: 100vh;
   display: flex;
-  align-items: stretch;
+  align-items: center;
+  place-content: center;
 `
 
 export const Content = styled.div`
+margin-bottom: 120px;
   display: flex;
   flex-direction: column;
   place-content: center;
@@ -39,6 +70,24 @@ export const Content = styled.div`
   h1 {
       margin-bottom: 24px;
     }
+  
+`
 
-       
+export const MessageWrapper = styled.div<MessageProps>`
+  max-width: 700px;
+  display: flex;
+  width: 100%;
+  place-content: start;
+  align-items: start;
+  margin-top: 16px;
+  font-weight: 500;
+
+  ${(props) => props.hasError && css`
+      color: #c53030;
+    `}
+
+  ${(props) => !props.hasError && css`
+      color: #73AB84;
+    `}
+
 `

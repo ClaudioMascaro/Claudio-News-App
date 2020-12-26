@@ -1,37 +1,53 @@
 import React, { useState, FormEvent } from 'react'
 import api from '../../services/api';
 import Button from '../../components/Button'
+import { schema } from '../../config/validationSchemas'
 
-import { Form, Container, Content } from './styles'
+import { Form, Container, Content, MessageWrapper } from './styles'
 
 const Newsletter: React.FC = () => {
+  const [email, setEmail] = useState('')
+  const [inputError, setInputError] = useState({
+  message: '',
+  status: true,
+  ref: true})
 
-  const [email, setEmail] = useState('') 
-
-  async function handleAddEmail(event: FormEvent<HTMLFormElement>): Promise<void> {
+  async function onSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-    
-    if (!email) {
-      return
-    }
+    try {
+      await schema.validate({ email }, {
+        abortEarly: false,
+      })
+      const response = await api.post('/newsletter', {email})
+      const { message } = response.data
+      setEmail(email)
+      setInputError({ message, status: false, ref: false})  
 
-    try{
+      } catch (err) {
       setEmail('')
-      return await api.post('/newsletter', {email})
-      
-    } catch (err) {
-      return
-    }
+      setInputError({ message: err.response? err.response.data : err.message,
+        status: true, ref: false})
+      }
+}  
+
+  function onInputChange (e: React.ChangeEvent<HTMLInputElement>) {
+    setEmail(e.target.value)
+    setInputError({message: '',
+    status: true,
+    ref: true})
   }
 
   return (
     <Container>
         <Content>
         <h1>Faça seu cadastro</h1>
-          <Form onSubmit={handleAddEmail}>
-              <input value={email} onChange={e => setEmail(e.target.value)} name="email" placeholder= "E-mail" />
+          <Form hasError={!!inputError.status} errorRef={!!inputError.ref} onSubmit={onSubmit}>
+              <input value={email} onChange={onInputChange} name="email" placeholder= "E-mail" />
               <Button name="login" type="submit">Inscrever-se</Button>
             </Form>
+            <MessageWrapper hasError={!!inputError.status}>
+            { inputError && inputError.message }
+            </MessageWrapper>
         </Content>
     </Container> 
   )
