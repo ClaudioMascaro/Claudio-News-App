@@ -1,8 +1,13 @@
 import React from 'react';
+import Newsletter from './pages/Newsletter';
 
+import GlobalStyle from './styles/global'
 
 const App: React.FC = () => (
-<h1>Olá munjdo!</h1>
+  <>
+    <Newsletter />
+    <GlobalStyle />
+  </>
 );
 
 export default App;
