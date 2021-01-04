@@ -9,8 +9,7 @@ interface MessageProps {
   hasError: boolean;
 }
 
-
-export const Form = styled.form<FormProps>`
+export const FormStyle = styled.form<FormProps>`
   height: 56px;
   max-width: 700px;
   display: flex;
@@ -27,7 +26,7 @@ export const Form = styled.form<FormProps>`
       color: #3a3a3a;
       border: 1px solid #FFF;
     
-      ${(props) => (props.hasError && props.isTyping) && css`
+    ${(props) => (props.hasError && props.isTyping) && css`
       border-color: #FFF;
     `}
 
@@ -48,29 +47,6 @@ export const Form = styled.form<FormProps>`
     }
 
   }
-`
-
-export const Container = styled.div`
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  place-content: center;
-`
-
-export const Content = styled.div`
-margin-bottom: 120px;
-  display: flex;
-  flex-direction: column;
-  place-content: center;
-  align-items: center;
-
-  width: 100%;
-  max-width: 1400px;
-  
-  h1 {
-      margin-bottom: 24px;
-    }
-  
 `
 
 export const MessageWrapper = styled.div<MessageProps>`
