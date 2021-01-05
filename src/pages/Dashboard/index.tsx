@@ -6,35 +6,47 @@ import api from '../../services/api';
 import Pagination from '../../components/Pagination'
 
 interface Mailing {
-    _id: string
-    email: string
-    createdAt: Date
+  _id: string
+  email: string
+  createdAt: Date
 }
 
 const Dashboard: React.FC = () => {
 
   const [email, setEmail] = useState([])
-  const [nextPage, setNextPage] = useState()
-  const [previousPage, setPreviousPage] = useState()
   const [loading, setLoading] = useState(true)
-  const [currentPageUrl, setCurrentPageUrl] = useState(`/newsletter?page=
-  ${1}&limit=${10}`)
+  const [page, setPage] = useState({
+    current: `/newsletter?page=
+    ${1}&limit=${10}`,
+    previous: null,
+    next: 2,
+  })
+  const [error, setError] = useState('')
 
   useEffect(() => {
     setLoading(true)
-    api.get(currentPageUrl).then(res => {
+    api.get(page.current).then(res => {
       setLoading(false)
       const { results } = res.data
-      setNextPage(res.data.next? res.data.next : false)
-      setPreviousPage(res.data.previous? res.data.previous : false)
+      setPage({
+        current: page.current,
+        previous: res.data.previous || false,
+        next: res.data.next || false
+      })
       setEmail(results.map((mailing: Mailing) => mailing.email))
+    }).catch((err) => {
+      console.log(err)
+      setError('Erro ao carregar informações')
+      setLoading(false)
     })
-  }, [currentPageUrl])
+  }, [page.current])
+
 
   if (loading) return (
     <>
       <Container>
         <Content>
+        <MailingList email={email} />
           Carregando...
         </Content>
       </Container>
@@ -42,13 +54,21 @@ const Dashboard: React.FC = () => {
   )
 
   function gotoNextPage () {
-    setCurrentPageUrl(`/newsletter?page=${nextPage}&limit=${10}`)
+    setPage({
+      current: `/newsletter?page=${page.next}&limit=${10}`,
+      previous: page.previous,
+      next: page.next
+    })
   }
 
   function gotoPreviousPage () {
-    setCurrentPageUrl(`/newsletter?page=${previousPage}&limit=${10}`)
+    setPage({
+      current: `/newsletter?page=${page.previous}&limit=${10}`,
+      previous: page.previous,
+      next: page.next
+    })
   }
-
+  
   return (
     <>
       <Container>
@@ -60,10 +80,12 @@ const Dashboard: React.FC = () => {
             <button><SortByAlpha /></button>
             <button><DateRange /></button>
           </span>
-          <MailingList email={email} />
+          <MailingList 
+          email={email}
+          error={error} />
           <Pagination
-          gotoNextPage={nextPage? gotoNextPage : undefined}
-          gotoPreviousPage={previousPage? gotoPreviousPage : undefined}
+          gotoNextPage={page.next? gotoNextPage : undefined}
+          gotoPreviousPage={page.previous? gotoPreviousPage : undefined}
           />
         </Content>
       </Container>

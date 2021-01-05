@@ -4,11 +4,12 @@ import { List } from './styles'
 
 interface Props {
   email: Array<string>
+  error?: string
 }
 
-const MailingList: React.FC<Props> = ({ email }) => {
+const MailingList: React.FC<Props> = ({ email, error }) => {
   
-  return (
+   if (email.length > 0) return (
     <List>
     {email.map(m => (
       <li key={m}>
@@ -21,5 +22,8 @@ const MailingList: React.FC<Props> = ({ email }) => {
     ))}
     </List>
   )
+
+  return (<List>{error}</List>)
+
 }
 export default MailingList
