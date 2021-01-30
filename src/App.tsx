@@ -1,12 +1,14 @@
 import React from 'react';
-import Newsletter from './pages/Newsletter';
-
+import { BrowserRouter } from 'react-router-dom'
+import Routes from './Routes'
 import GlobalStyle from './styles/global'
 
 const App: React.FC = () => (
   <>
-    <Newsletter />
-    <GlobalStyle />
+  <BrowserRouter>
+    <Routes/>
+  </BrowserRouter>
+  <GlobalStyle/>
   </>
 );
 

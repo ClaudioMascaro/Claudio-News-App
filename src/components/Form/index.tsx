@@ -22,7 +22,7 @@ const Form: React.FC<FormProps> = () => {
       })
       const response = await api.post('/newsletter', {email})
       const { message } = response.data
-      setEmail(email)
+      setEmail('')
       setInputError({ message, hasError: false, isTyping: false})  
 
     } catch (err) {

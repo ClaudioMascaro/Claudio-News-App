@@ -27,10 +27,12 @@ height: auto;
     margin-right: 20px;
     color: #3a3a3a;
     border: 1px solid #FFF;
+    padding: 10px;
   }
 
 
   label {
+    padding: 10px;
     font-size: 22px;
     flex: 2;
     color: #3a3a3a;

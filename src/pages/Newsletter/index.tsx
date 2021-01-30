@@ -1,8 +1,8 @@
 import React from 'react'
 import Form from '../../components/Form'
 
-
 import { Container, Content } from './styles'
+import { withRouter } from 'react-router-dom'
 
 const Newsletter: React.FC = () => {
 
@@ -16,4 +16,4 @@ const Newsletter: React.FC = () => {
   )
 }
 
-export default Newsletter
+export default withRouter(Newsletter)
